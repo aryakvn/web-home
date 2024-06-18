@@ -1,0 +1,130 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #212121;
+    color: #f4f4f4;
+    height: 100vh;
+
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.mono {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    object-fit: contain;
+    object-position: center;
+
+    background: none;
+    border: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+.loading #ip {
+    width: 12rem;
+    height: 1rem;
+    background: linear-gradient(90deg, #414141, #212121, #414141);
+    background-size: 200% 100%;
+    animation: loading 4s;
+    animation-iteration-count: infinite;
+    padding: 10px;
+    color: transparent;
+    border-radius: 1rem;
+}
+
+@keyframes loading {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: -200% 0;
+    }
+}
+
+form {
+    width: clamp(300px, 50%, 510px);
+    position: relative;
+
+    display: flex;
+    background-color: #414141;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+form input[type=text] {
+    width: 100%;
+    padding: 10px 20px;
+    color: #f4f4f4;
+    
+    background-color: #414141;
+    
+    border: none;
+    
+    font-size: 1rem;
+    transition: all 250ms;
+}
+
+form input[type=text]:focus {
+    outline: none;
+}
+
+form button[type=submit] {
+    padding: 10px 20px;
+    height: 100%;
+    
+    border: none;
+
+    background: transparent;
+    color: white;
+}
+
+.services {
+    width: clamp(300px, 50%, 510px);
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    margin-top: 2rem;
+    justify-content: space-evenly;
+}
+
+.services a {
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: column;
+    color: #f4f4f4;
+    text-decoration: none;
+    border: 1px solid #414141;
+    border-radius: 1rem;
+}
+
+.services a img {
+    width: 2rem ;
+    height: 2rem    ;
+
+    object-fit: contain;
+    object-position: center;
+}

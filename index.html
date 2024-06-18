@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Tab</title>
+
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>
+        <span id="ip" class="mono"> ***.***.***.*** </span>
+
+        <button id="hideIp" class="icon">
+          <img src="/assets/icons/eye-slash.svg" data-hidden-icon="/assets/icons/eye-slash.svg" data-visible-icon="/assets/icons/eye.svg" alt="" />
+        </button>
+      </h1>
+
+      <form action="https://google.com/search">
+        <input type="text" name="q" placeholder="Search ..." />
+        <button type="submit">
+          <img src="/assets/icons/magnify.svg" alt="GO" class="icon" />
+        </button>
+      </form>
+
+      <div class="services">
+        <a href="https://google.com" class="service">
+          <img src="./assets/icons/google.svg" alt="" />
+          <span>Google</span>
+        </a>
+
+        <a href="https://youtube.com" class="service">
+          <img src="./assets/icons/youtube.svg" alt="" />
+          <span>Youtube</span>
+        </a>
+
+        <a href="https://chat.openai.com" class="service">
+          <img src="./assets/icons/openai.svg" alt="" />
+          <span>OpenAI</span>
+        </a>
+      </div>
+    </div>
+
+    <script src="/assets/scripts/vue.min.js"></script>
+
+    <!-- IP -->
+    <script>
+      const form = document.querySelector("form");
+      const text = document.querySelector("form input[type=text]");
+      const hideIp = document.getElementById("hideIp");
+      const h1 = document.querySelector("h1");
+      const ip = document.querySelector("h1 #ip");
+
+      const myIp = Vue.ref("***.***.***.***");
+      const resolved = Vue.ref(null);
+      const ipHidden = Vue.ref(false);
+
+      ipHidden.value = (window.localStorage.getItem("hide-ip") || "false") === "true"
+
+      // Watch for hidden toggle
+      Vue.watch(ipHidden, (value) => {
+        const icon = hideIp.querySelector("img");
+        renderIp();
+
+        if (value === true) {
+          ip.textContent = myIp.value;
+          icon.src = icon.dataset.hiddenIcon;
+          return;
+        } else if (value === false) {
+          icon.src = icon.dataset.visibleIcon;
+        }
+
+        window.localStorage.setItem("hide-ip", value);
+      });
+
+      // Watch for IP changes
+      Vue.watch(myIp, (value) => {
+        ip.textContent = value;
+        renderIp();
+      });
+
+      // Loading
+      Vue.watch(resolved, (value) => {
+        if (value) {
+          h1.classList.remove("loading");
+        } else {
+          h1.classList.add("loading");
+        }
+      });
+
+      const renderIp = () => {
+        const masked = [];
+        const isV6 = myIp.value.includes(":");
+
+        if (isV6) {
+          const parts = myIp.value.split(":");
+          masked.push(parts[0]);
+          masked.push("****");
+          masked.push(parts[parts.length - 1]);
+        } else {
+          const parts = myIp.value.split(".");
+          masked.push(parts[0]);
+          masked.push("***");
+          masked.push("***");
+          masked.push("***");
+        }
+
+        ip.textContent = masked.join(isV6 ? ":" : ".");
+      };
+
+      // Form Submition
+      form.addEventListener("submit", (e) => {
+        const isURL = URL.canParse(text.value);
+
+        if (!text.value) {
+          e.preventDefault();
+        }
+
+        if (isURL) {
+          e.preventDefault();
+          window.location.href = text.value;
+        }
+      });
+
+      // Hide IP
+      hideIp.addEventListener("click", () => {
+        ipHidden.value = !ipHidden.value;
+      });
+
+      // Get IP
+      document.addEventListener("DOMContentLoaded", async () => {
+        resolved.value = false;
+        const res = await fetch("https://api.ipify.org?format=json", { mode: "cors" });
+        const data = await res.json();
+
+        myIp.value = data.ip;
+        resolved.value = true;
+      });
+    </script>
+  </body>
+</html>
